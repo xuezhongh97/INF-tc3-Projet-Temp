@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<script src="leaflet.js"> // insertion bibliothèque Leaflet : http://leafletjs.com/ </script>
+
+<title>TD3-s7.html</title>
+<link rel="stylesheet" type="text/css" href="leaflet.css" /> 
+<link rel="stylesheet" type="text/css" href="style.css"/>
+
+<meta charset="utf-8">
+
+<style>
+#map { height: 400px; width: 400px; float:left; margin-left:20px; margin-right:20px;}
+</style>
+
+<body onload="load_data()">  <!-- Récupération des données avec le chargement de la page -->
+
+<h1>Régularité des TER</h1>
+
+ <!-- <label><span>Région :</span><input id="region" name="Region"> 
+ <button id="bouton">Afficher la courbe</button>  </label>  -->
+ <div id="map"></div>  
+
+<div id="reponse">
+  <p align="center"></p>
+  <img width="70%" src="" />
+</div>
+<div>
+</div>
+</body>
+
+<script>
+// Creation d'une carte dans la balise div "map", et positionne la vue sur un point donné et un niveau de zoom
+var map = L.map('map').setView([46.5,2.5], 5);
+// Ajout d'une couche de dalles OpenStreetMap
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+     }).addTo(map);
+	 
+function load_data () {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {   // fonction callback
+      // récupération des données renvoyées par le serveur
+	  var data = JSON.parse(this.responseText);
+      // boucle sur les enregistrements renvoyés
+      for ( n = 0; n < data.length; n++ ) {
+        // insertion d'un marqueur à la position, attachement d'une popup, capture de l'évènement "clic'
+	    L.marker([data[n].lat,data[n].lon]).addTo(map)
+          .bindPopup(data[n].nom)
+		  .addEventListener('click',OnMarkerClick)
+		  .idreg=data[n].nom;   // propriété personnalisée ajouté au marqueur
+	    }
+    };
+    xhr.open('GET','/regions',true);
+    xhr.send();
+}
+
+function OnMarkerClick (e) {
+    var xhr = new XMLHttpRequest();
+	var image =  document.querySelector('#reponse img'),
+        legende = document.querySelector('#reponse p');
+	xhr.onload = function() {   // fonction callback
+      var data = JSON.parse(this.responseText)
+      image.src = data.img;
+      image.alt = data.title;
+      legende.innerHTML = data.title;
+      };
+    xhr.open('GET','/ponctualite/'+e.target.idreg,true);  // on récupère la courbe par un appel au serveur
+    xhr.send();
+}
+</script>
+
+
