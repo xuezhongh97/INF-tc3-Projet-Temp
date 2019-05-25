@@ -2,26 +2,32 @@
 
 <script src="leaflet.js"> // insertion bibliothèque Leaflet : http://leafletjs.com/ </script>
 
-<title>TD3-s7.html</title>
+<title>Météo ECL</title>
 <link rel="stylesheet" type="text/css" href="leaflet.css" /> 
 <link rel="stylesheet" type="text/css" href="style.css"/>
 
 <meta charset="utf-8">
 
 <style>
-#map { height: 400px; width: 400px; float:left; margin-left:20px; margin-right:20px;}
+#map { height: 600px; width: 600px; float:left; margin-left:20px; margin-right:20px;}
 </style>
 
 <body onload="load_data()">  <!-- Récupération des données avec le chargement de la page -->
 
-<h1>Régularité des TER</h1>
+<h1>Météo Wikipédia</h1>
 
  <!-- <label><span>Région :</span><input id="region" name="Region"> 
  <button id="bouton">Afficher la courbe</button>  </label>  -->
  <div id="map"></div>  
 
 <div id="reponse">
-  <p align="center"></p>
+  <p1 align="center">Cliquer la carte pour les détail</p1><br/>
+  <p2 align="center"></p2><br/>
+  <p3 align="center"></p3><br/>
+  <p4 align="center"></p4><br/>
+  <p5 align="center"></p5>
+
+
   <img width="70%" src="" />
 </div>
 <div>
@@ -57,14 +63,23 @@ function load_data () {
 function OnMarkerClick (e) {
     var xhr = new XMLHttpRequest();
 	var image =  document.querySelector('#reponse img'),
-        legende = document.querySelector('#reponse p');
+      legende1 = document.querySelector('#reponse p1');
+      legende2 = document.querySelector('#reponse p2');
+      legende3 = document.querySelector('#reponse p3');
+      legende4 = document.querySelector('#reponse p4');
+      legende5 = document.querySelector('#reponse p5');
+
 	xhr.onload = function() {   // fonction callback
       var data = JSON.parse(this.responseText)
-      image.src = data.img;
-      image.alt = data.title;
-      legende.innerHTML = data.title;
+      legende1.innerHTML = "Nom: " + data.nom;
+      legende2.innerHTML = "Numéro: " + data.num;
+      legende3.innerHTML = "Latitude: " + data.lat;
+      legende4.innerHTML = "Longtitude: " + data.lon;
+      legende5.innerHTML = "Altitude: " + data.high;
+
+
       };
-    xhr.open('GET','/ponctualite/'+e.target.idreg,true);  // on récupère la courbe par un appel au serveur
+    xhr.open('GET','/detail/'+e.target.idreg,true);  // on récupère la courbe par un appel au serveur
     xhr.send();
 }
 </script>
