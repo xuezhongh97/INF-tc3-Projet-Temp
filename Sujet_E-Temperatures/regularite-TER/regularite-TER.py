@@ -11,6 +11,49 @@ import datetime as dt
 import matplotlib.dates as pltd
 
 import sqlite3
+class station:
+    def __init__(self,num,nom,lat,lon,high):
+        self.num=num  #nombre
+        self.nom=nom  #nom
+        self.lat=lat  #latitude
+        self.lon=lon  #longtitude
+        self.high=high#altitude
+        
+    def get_num(self):
+        return self.num
+
+    def get_nom(self):
+        return self.nom
+
+    def get_lat(self): #valeur sous form "+***:**:** "
+        return self.lat
+
+    def get_lon(self):
+        return self.lon
+
+    def get_high(self):
+        return self.high
+
+    def get_lat_vrai(self): #valeur en nombre
+        lantemp=self.lat.split(":")
+        return int(lantemp[0])+int(lantemp[1])/60+int(lantemp[2])/6000
+
+    def get_lon_vrai(self):
+        lontemp=self.lon.split(":")
+        return int(lontemp[0])+int(lontemp[1])/60+int(lontemp[2])/6000
+
+
+conn = sqlite3.connect('Temperatures.sqlite')
+c = conn.cursor()
+station_list=[]
+c = conn.cursor()
+c.execute("SELECT * FROM 'stations-meteo'")
+r = c.fetchall()
+
+for a in r:
+    station_list.append(station(a[0],a[1],a[2],a[3],a[4]))
+
+
 
 #
 # Définition du nouveau handler
@@ -39,6 +82,9 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     # le chemin d'accès commence par /ponctualite
     elif self.path_info[0] == 'ponctualite':
       self.send_ponctualite()
+      
+    elif self.path_info[0] == 'detail':
+      self.send_detail()
       
     # ou pas...
     else:
@@ -114,22 +160,15 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
   #
   # On génère et on renvoie la liste des régions et leur coordonnées (version TD3)
   #
-  def send_regions(self):
-
-    conn = sqlite3.connect('ter.sqlite')
-    c = conn.cursor()
-    
-    c.execute("SELECT * FROM 'regions'")
-    r = c.fetchall()
-    
+  def send_regions(self): # la fonction pour envoyer les latitudes et lontitudes.
     headers = [('Content-Type','application/json')];
-    body = json.dumps([{'nom':n, 'lat':lat, 'lon': lon} for (n,lat,lon) in r])
+    body = json.dumps([{'nom':i.get_nom(), 'lat':i.get_lat_vrai(), 'lon': i.get_lon_vrai()} for i in station_list])
+    i=station_list[0]
     self.send(body,headers)
-
   #
   # On génère et on renvoie un graphique de ponctualite (cf. TD1)
   #
-  def send_ponctualite(self):
+  def send_ponctualite(self): # pour afficher les informations d'une station
 
     conn = sqlite3.connect('ter.sqlite')
     c = conn.cursor()
@@ -191,8 +230,22 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     headers = [('Content-Type','application/json')];
     self.send(body,headers)
 
-            
+  def send_detail(self):
+    for i in station_list:
+      if(self.path_info[1] == i.get_nom()):
+        station = i
+    body = json.dumps({
+      'nom':station.get_nom(),\
+      'num': station.get_num(), \
+      'lat': station.get_lat(), \
+      'lon': station.get_lon(), \
+      'high' : station.get_high(), \
+      });
     
+    headers = [('Content-Type','application/json')];
+
+    self.send(body,headers)
+
   #
   # On envoie les entêtes et le corps fourni
   #
