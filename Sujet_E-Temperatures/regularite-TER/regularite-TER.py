@@ -49,21 +49,18 @@ station_list=[]
 c = conn.cursor()
 c.execute("SELECT * FROM 'stations-meteo'")
 r = c.fetchall()
-
+current_region=0
 for a in r:
     station_list.append(station(a[0],a[1],a[2],a[3],a[4]))
-
-
 
 #
 # Définition du nouveau handler
 #
-class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
+class RequestHandler(http.server.SimpleHTTPRequestHandler):
   # sous-répertoire racine des documents statiques
   static_dir = '/client'
-
-  #
+  current_region=0
   # On surcharge la méthode qui traite les requêtes GET
   #
   def do_GET(self):
@@ -140,7 +137,6 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
   # On envoie un document avec l'heure
   #
   def send_time(self):
-    
     # on récupère l'heure
     time = self.date_time_string()
 
@@ -169,14 +165,12 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
   # On génère et on renvoie un graphique de ponctualite (cf. TD1)
   #
   def send_ponctualite(self): # pour afficher les informations d'une station
-
     conn = sqlite3.connect('Temperatures.sqlite')
     c = conn.cursor()
-    station_name=self.path_info[1]
+
     for i in station_list:
-      if i.get_nom()==station_name:
+      if i.get_nom()==self.path_info[1]:
         station_temp=i
-    
     # configuration du tracé
     fig1 = plt.figure(figsize=(18,6))
     ax = fig1.add_subplot(111)
@@ -190,8 +184,10 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     ax.xaxis.set_label_text("Date")
     ax.yaxis.set_label_text("ºC")
             
-       
-    c.execute("SELECT * FROM 'TG_1978-2018' WHERE STAID={} ORDER BY Date".format(station_temp.get_num()))
+    if self.path_info[2]=='Moyenne':  sheet=  'TG_1978-2018'
+    elif self.path_info[2]=='Maximale': sheet= 'TX_1978-2018'
+    elif self.path_info[2]=='Minimale': sheet=  'TN_1978-2018'
+    c.execute("SELECT * FROM '{}' WHERE STAID={} ORDER BY Date".format(sheet,station_temp.get_num()))
     r = c.fetchall()
     # recupération de la date (colonne 2) et transformation dans le format de pyplot
     x = [pltd.date2num(dt.date(int(str(a[2])[:4]),int(str(a[2])[4:6]),int(str(a[2])[6:8]))) for a in r]
@@ -203,22 +199,26 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
     # légendes
     plt.legend(loc='lower left')
-    plt.title('Température moyenne en ºC',fontsize=16)
+    plt.title('Température {} de {} en ºC'.format(self.path_info[2],self.path_info[1]),fontsize=16)
 
     # génération des courbes dans un fichier PNG
-    fichier = 'courbes/ponctualite_'+self.path_info[1] +'.png'
+    fichier = 'courbes/ponctualite_'+self.path_info[1]+self.path_info[2] +'.png'
     plt.savefig('client/{}'.format(fichier))
     
     #html = '<img src="/{}?{}" alt="ponctualite {}" width="100%">'.format(fichier,self.date_time_string(),self.path)
     body = json.dumps({
-            'title': 'Température moyenne '+self.path_info[1], \
+            'title': 'Température {} de'.format(self.path_info[2])+self.path_info[1], \
             'img': '/'+fichier \
              });
     # on envoie
     headers = [('Content-Type','application/json')];
+    print(1)
     self.send(body,headers)
 
   def send_detail(self):
+    current_region=self.path_info[1]
+    print("yes")
+    print(current_region)
     for i in station_list:
       if(self.path_info[1] == i.get_nom()):
         station = i
@@ -257,6 +257,5 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 #
 # Instanciation et lancement du serveur
 #
-httpd = socketserver.TCPServer(("", 8081), RequestHandler)
+httpd = socketserver.TCPServer(("", 8082), RequestHandler)
 httpd.serve_forever()
-
