@@ -19,18 +19,25 @@
  <!-- <label><span>Région :</span><input id="region" name="Region"> 
  <button id="bouton">Afficher la courbe</button>  </label>  -->
 <div id="map"></div>  
-
+<div id="title"></div>>
 <div id="reponse">
-  <p1 align="center">Cliquer la carte pour les détail</p1><br/>
+  <p1 align="center" id="region_nom">Cliquer la carte pour les détail</p1><br/>
   <p2 align="center"></p2><br/>
   <p3 align="center"></p3><br/>
   <p4 align="center"></p4><br/>
   <p5 align="center"></p5>
 </div>
+<select id="type">
+<option>Moyenne</option>
+<option>Maximale</option>
+<option>Minimale</option>
+</select>
+<button id="button">Afficher</button>
 <div id="courbe">
   <p align="left"></p>
   <img width="60%" src="" />
-</div></body>
+</div>
+</body>
 
 <script>
 // Creation d'une carte dans la balise div "map", et positionne la vue sur un point donné et un niveau de zoom
@@ -48,11 +55,16 @@ function load_data () {
       // boucle sur les enregistrements renvoyés
       for ( n = 0; n < data.length; n++ ) {
         // insertion d'un marqueur à la position, attachement d'une popup, capture de l'évènement "clic'
-	    L.marker([data[n].lat,data[n].lon]).addTo(map)
+	    
+		L.marker([data[n].lat,data[n].lon]).addTo(map)
+          .bindPopup(data[n].nom)
+		  .addEventListener('click',envoiformulaire)
+		  .idreg=data[n].nom; 
+		L.marker([data[n].lat,data[n].lon]).addTo(map)
           .bindPopup(data[n].nom)
 		  .addEventListener('click',OnMarkerClick)
 		  .idreg=data[n].nom;   // propriété personnalisée ajouté au marqueur
-	    }
+		}
     };
     xhr.open('GET','/regions',true);
     xhr.send();
@@ -62,12 +74,11 @@ function OnMarkerClick (e) {
     var xhr = new XMLHttpRequest();
 	var 
       legende1 = document.querySelector('#reponse p1');
+      title = document.querySelector('#title');
       legende2 = document.querySelector('#reponse p2');
       legende3 = document.querySelector('#reponse p3');
       legende4 = document.querySelector('#reponse p4');
       legende5 = document.querySelector('#reponse p5');
-      legende6 = document.querySelector('#courbe p');
-      image =  document.querySelector('#courbe img');
 
 	xhr.onload = function() {   // fonction callback
       var data = JSON.parse(this.responseText)
@@ -76,14 +87,34 @@ function OnMarkerClick (e) {
       legende3.innerHTML = "Latitude: " + data.lat;
       legende4.innerHTML = "Longtitude: " + data.lon;
       legende5.innerHTML = "Altitude: " + data.high;
+      title.innerHTML = data.nom
+      };
+    xhr.open('GET','/detail/'+e.target.idreg,true);  
+    xhr.send();
+}
+
+document.getElementById('button').addEventListener('click', envoiformulaire);
+
+function envoiformulaire(e) {
+  var xhr = new XMLHttpRequest(); 
+  // on récupére le nom et le prénom
+  var type = document.getElementById('type').value;
+		region = document.getElementById('title').innerHTML
+  var
+  	legende6 = document.querySelector('#courbe p');
+    image =  document.querySelector('#courbe img');
+
+  xhr.onload = function() {   // fonction callback
+    // récupération des données renvoyées par le serveur
+    var data = JSON.parse(this.responseText);
       legende6.innerHTML = data.title;
       image.src = data.img;
       image.alt = data.title;
-      };
-    xhr.open('GET','/detail/'+e.target.idreg,true);  
-    xhr.open('GET','/ponctualite/'+e.target.idreg,true);
-    xhr.send();
+
+    // affichage dans la zone 'reponse' du prénom et du nom récupéré par l'appel au serveur
+    };
+  xhr.open('GET','/ponctualite'+'/'+region+'/'+type,true);  // requête avec une "query string"
+  xhr.send();
 }
-</script>
 
-
+ </script>
