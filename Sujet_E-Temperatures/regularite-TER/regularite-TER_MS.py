@@ -200,7 +200,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     c.execute("SELECT * FROM '{}' WHERE Date > {} AND Date < {} AND STAID={} ORDER BY Date".format(sheet,deb,fin,station_temp.get_num()))
     r = c.fetchall()
     # prise en compte du pas, intervalle de temps minimale considéré
-    r_pas = [r[i] for i in range(0,len(r),pas)]
+    r_pas = [r[i] for i in range(0,len(r),int(pas))]
     # recupération de la date (colonne 2) et transformation dans le format de pyplot
     x = [pltd.date2num(dt.date(int(str(a[2])[:4]),int(str(a[2])[4:6]),int(str(a[2])[6:8]))) for a in r_pas]
     # récupération de la régularité (colonne 8)
