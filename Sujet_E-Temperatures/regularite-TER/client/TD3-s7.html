@@ -121,7 +121,7 @@ function envoiformulaire(e) {
 
     // affichage dans la zone 'reponse' du prénom et du nom récupéré par l'appel au serveur
     };
-  xhr.open('GET','/ponctualite'+'/'+region+'/'+type+'/'+debut+'/'+fin,true);  // requête avec une "query string"
+  xhr.open('GET','/ponctualite'+'/'+region+'/'+type+'/'+debut+'/'+fin+'/'+pas,true);  // requête avec une "query string"
   xhr.send();
 }
 
