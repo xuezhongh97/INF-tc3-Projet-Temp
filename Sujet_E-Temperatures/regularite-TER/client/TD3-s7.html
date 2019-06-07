@@ -27,12 +27,18 @@
   <p4 align="center"></p4><br/>
   <p5 align="center"></p5>
 </div>
+
 <select id="type">
 <option>Moyenne</option>
 <option>Maximale</option>
 <option>Minimale</option>
 </select>
+
+Date de début: <input type="date" id="debut" value="1978-01-01">
+Date de fin: <input type="date" id="fin" value="2018-10-31">
+
 <button id="button">Afficher</button>
+
 <div id="courbe">
   <p align="left"></p>
   <img width="60%" src="" />
@@ -99,7 +105,9 @@ function envoiformulaire(e) {
   var xhr = new XMLHttpRequest(); 
   // on récupére le nom et le prénom
   var type = document.getElementById('type').value;
-		region = document.getElementById('title').innerHTML
+      debut = document.getElementById('debut').value;
+      fin = document.getElementById('fin').value;
+      region = document.getElementById('title').innerHTML
   var
   	legende6 = document.querySelector('#courbe p');
     image =  document.querySelector('#courbe img');
@@ -113,7 +121,7 @@ function envoiformulaire(e) {
 
     // affichage dans la zone 'reponse' du prénom et du nom récupéré par l'appel au serveur
     };
-  xhr.open('GET','/ponctualite'+'/'+region+'/'+type,true);  // requête avec une "query string"
+  xhr.open('GET','/ponctualite'+'/'+region+'/'+type'/'+debut'/'+fin,true);  // requête avec une "query string"
   xhr.send();
 }
 
