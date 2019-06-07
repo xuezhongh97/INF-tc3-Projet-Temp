@@ -67,10 +67,6 @@ function load_data () {
 	    
 		L.marker([data[n].lat,data[n].lon]).addTo(map)
           .bindPopup(data[n].nom)
-		  .addEventListener('click',envoiformulaire)
-		  .idreg=data[n].nom; 
-		L.marker([data[n].lat,data[n].lon]).addTo(map)
-          .bindPopup(data[n].nom)
 		  .addEventListener('click',OnMarkerClick)
 		  .idreg=data[n].nom;   // propriété personnalisée ajouté au marqueur
 		}
@@ -111,9 +107,9 @@ function envoiformulaire(e) {
       debut = document.getElementById('debut').value,
       fin = document.getElementById('fin').value,
       pas = document.getElementById('pas').value,
-      region = document.getElementById('title').innerHTML
+      region = document.getElementById('title').innerHTML;
   var
-  	legende6 = document.querySelector('#courbe p');
+  	legende6 = document.querySelector('#courbe p'),
     image =  document.querySelector('#courbe img');
 
   xhr.onload = function() {   // fonction callback
@@ -125,7 +121,7 @@ function envoiformulaire(e) {
 
     // affichage dans la zone 'reponse' du prénom et du nom récupéré par l'appel au serveur
     };
-  xhr.open('GET','/ponctualite'+'/'+region+'/'+type'/'+debut'/'+fin,true);  // requête avec une "query string"
+  xhr.open('GET','/ponctualite'+'/'+region+'/'+type+'/'+debut+'/'+fin,true);  // requête avec une "query string"
   xhr.send();
 }
 
