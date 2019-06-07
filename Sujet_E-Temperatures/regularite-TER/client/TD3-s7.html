@@ -16,12 +16,12 @@
 
 <h1>Météo Wikipédia</h1>
 
- <!-- <label><span>Région :</span><input id="region" name="Region"> 
+ <!-- <label><span>Région :</span><input id="station" name="station"> 
  <button id="bouton">Afficher la courbe</button>  </label>  -->
 <div id="map"></div>  
 <div id="title"></div>>
 <div id="reponse">
-  <p1 align="center" id="region_nom">Cliquer la carte pour les détail</p1><br/>
+  <p1 align="center" id="station_nom">Cliquer la carte pour les détail</p1><br/>
   <p2 align="center"></p2><br/>
   <p3 align="center"></p3><br/>
   <p4 align="center"></p4><br/>
@@ -71,7 +71,7 @@ function load_data () {
 		  .idreg=data[n].nom;   // propriété personnalisée ajouté au marqueur
 		}
     };
-    xhr.open('GET','/regions',true);
+    xhr.open('GET','/stations',true);
     xhr.send();
 }
 
@@ -107,7 +107,7 @@ function envoiformulaire(e) {
       debut = document.getElementById('debut').value,
       fin = document.getElementById('fin').value,
       pas = document.getElementById('pas').value,
-      region = document.getElementById('title').innerHTML;
+      station = document.getElementById('title').innerHTML;
   var
   	legende6 = document.querySelector('#courbe p'),
     image =  document.querySelector('#courbe img');
@@ -121,7 +121,7 @@ function envoiformulaire(e) {
 
     // affichage dans la zone 'reponse' du prénom et du nom récupéré par l'appel au serveur
     };
-  xhr.open('GET','/ponctualite'+'/'+region+'/'+type+'/'+debut+'/'+fin+'/'+pas,true);  // requête avec une "query string"
+  xhr.open('GET','/ponctualite'+'/'+station+'/'+type+'/'+debut+'/'+fin+'/'+pas,true);  // requête avec une "query string"
   xhr.send();
 }
 
