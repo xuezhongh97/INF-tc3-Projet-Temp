@@ -25,7 +25,7 @@
   <p2 align="center"></p2><br/>
   <p3 align="center"></p3><br/>
   <p4 align="center"></p4><br/>
-  <p5 align="center"></p5>
+  <p5 align="center"></p5><br/>
   <p6 align="center"></p6>
 </div>
 
@@ -94,7 +94,7 @@ function OnMarkerClick (e) {
       legende3.innerHTML = "Latitude: " + data.lat;
       legende4.innerHTML = "Longtitude: " + data.lon;
       legende5.innerHTML = "Altitude: " + data.high;
-      legende6.innerHTML = "Régions sélectionnées: <br/>" + data.regions_select; 
+      legende6.innerHTML = "Stations sélectionnées: <br/>" + data.station_select; 
       title.innerHTML = data.nom
       };
     xhr.open('GET','/detail/'+e.target.idreg,true);  
