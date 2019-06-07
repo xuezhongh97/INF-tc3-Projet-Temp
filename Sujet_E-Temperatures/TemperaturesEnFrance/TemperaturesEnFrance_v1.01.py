@@ -89,7 +89,7 @@ for a in r:
 
 ############## Déclaration de la liste des régions (Variable globale) #########  
     
-regions_selectionnes=[]
+stations_selectionnes=[]
 
 
 ############## Définition du nouveau handler ##################################
@@ -248,9 +248,8 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
   
     def send_detail(self):
         current_station=self.path_info[1]
-        if current_region not in regions_selectionnes:
-            regions_selectionnes.append(current_region)
-        print(current_station)
+        if current_station not in stations_selectionnes:
+            stations_selectionnes.append(current_station)
         for i in station_list:
             if(self.path_info[1] == i.get_nom()):
                 station = i
@@ -259,7 +258,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                            'lat': station.get_lat(), \
                            'lon': station.get_lon(), \
                            'high' : station.get_high(), \
-                           'regions_select': regions_selectionnes, \
+                           'station_select': stations_selectionnes, \
                            });
         
         headers = [('Content-Type','application/json')];
