@@ -34,8 +34,9 @@
 <option>Minimale</option>
 </select>
 
-Date de début: <input type="date" id="debut" value="1978-01-01">
-Date de fin: <input type="date" id="fin" value="2018-10-31">
+Date de début : <input type="date" id="debut" value="1978-01-01" min="1978-01-01" max="2018-10-31">
+Date de fin : <input type="date" id="fin" value="2018-10-31" min="1978-01-01" max="2018-10-31">
+Pas en jours (entre 1 et 60) : <input type="number" id="pas" min="1" max="60">
 
 <button id="button">Afficher</button>
 
@@ -107,6 +108,7 @@ function envoiformulaire(e) {
   var type = document.getElementById('type').value;
       debut = document.getElementById('debut').value;
       fin = document.getElementById('fin').value;
+      pas = document.getElementById('pas').value;
       region = document.getElementById('title').innerHTML
   var
   	legende6 = document.querySelector('#courbe p');
