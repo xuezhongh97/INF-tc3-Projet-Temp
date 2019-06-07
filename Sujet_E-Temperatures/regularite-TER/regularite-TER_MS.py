@@ -214,7 +214,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
     plt.title('Température {} de {} en ºC'.format(self.path_info[2],self.path_info[1]),fontsize=16)
 
     # génération des courbes dans un fichier PNG
-    fichier = 'courbes/ponctualite_'+self.path_info[1]+self.path_info[2] +'.png'
+    fichier = 'courbes/ponctualite_'+self.path_info[1]+self.path_info[2] +deb+fin+pas+'.png'
     plt.savefig('client/{}'.format(fichier))
     
     #html = '<img src="/{}?{}" alt="ponctualite {}" width="100%">'.format(fichier,self.date_time_string(),self.path)
