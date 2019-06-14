@@ -187,16 +187,17 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 ############## On génère et on renvoie un graphique de temperature ############
   
     def send_temperature(self): # pour afficher les informations d'une station
+       
         # Connexion à la BDD
-
         conn = sqlite3.connect('Temperatures.sqlite')
         c = conn.cursor()
         stations_selectionnes_classifiees=[]
-        if self.path_info[6] == "Simple" : # si l'utilisateur veut afficher une courbe
+        if self.path_info[6] == "Simple" : # si l'utilisateur veut afficher juste une courbe
             for s in station_list:
                 if s.get_nom()==stations_selectionnes[-1]:
                     stations_selectionnes_classifiees.append(s)
-        else:       # s'il veut "comparaison" et "agrégation"
+        
+        else:       # s'il veut "comparaison" ou "agrégation"
             for i in stations_selectionnes: # récréer une liste des stations classifiées 
                 for s in station_list:
                     if s.get_nom()==i:
@@ -238,10 +239,11 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             for i in stations_selectionnes_classifiees:
                 fichier += str(i.get_num())
             fichier += self.path_info[2] +deb+fin+pas+'.png'
-        # Selon la reponse que cette requete, on crée la courbe ou on la cherche
+        
+        # Selon la reponse de cette requete, on crée la courbe ou on la cherche
         # La courbe n'est pas dans le cache
         if not r:
-            if len(stations_selectionnes_classifiees) == 1:
+            if self.path_info[6] == "Simple":
                 # On ajoute la ligne a la base des données
                 c.execute("INSERT INTO cache VALUES(?,?,?,?,?)",[self.path_info[1],self.path_info[2],deb,fin,pas])
                 conn.commit()
@@ -329,18 +331,22 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 
             else:
                 plt.title('La moyenne de température {} des stations selectionées'.format(self.path_info[2]),fontsize=16)
+            
             # génération des courbes dans un fichier PNG
             plt.savefig('client/{}'.format(fichier))
+        
         if self.path_info[6] == "Simple":
             body = json.dumps({
                     'title': 'Température {} de '.format(self.path_info[2])+self.path_info[1], \
                     'img': '/'+fichier \
                      });
+    
         elif self.path_info[6] == "Comparaison":
             body = json.dumps({
                     'title': 'Température {} des stations selectionées'.format(self.path_info[2]), \
                     'img': '/'+fichier \
                      });
+    
         else:
             body = json.dumps({
                     'title': 'La moyenne de température {} des stations selectionées'.format(self.path_info[2]), \
