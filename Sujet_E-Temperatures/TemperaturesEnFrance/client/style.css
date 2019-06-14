@@ -1,9 +1,8 @@
 ﻿/* fond de page */
 body {
-  background-image: linear-gradient(0deg, slateblue, black, black);
-  background-size: 100%;
+  background-image: linear-gradient(-225deg, #7DE2FC 0%, #B9B6E5 100%);  background-size: 100%;
   background-repeat: no-repeat;
-  color: white;
+  color: black;
   height: 100vh;
   margin: 0;
   /* pour éviter l'ascenseur */
@@ -13,21 +12,32 @@ body {
 
 /* bandeau de titre */
 h1 { 
-  color: white;
+  color: black;
   border: none;
   box-shadow: none;
   background-color: rgba(255,255,255,0.3);
-  border-top: 3px solid rgba(255,255,255,0.6);
-  border-bottom: 3px solid rgba(255,255,255,0.6);
-  margin-top: 1.33em;
-  text-shadow: 3px 3px 3px black;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  margin-bottom: 1.33em;
+  text-shadow: none;
+  font-size: 3.5em;
+  font-weight: 100;
+/*3px 3px 3px black;*/
+}
+
+p1{
+  color: black;
+  font-size: 1.8em;
+  font-weight: 100;
+  font-style: italic;
+  font-family:Arial;
+}
+
+p7 {
+  color: black;
+  font-size: 1.5em;
+  font-weight: 800;
 }
 
 /* contenu de la page */
-body > * {   padding-left: 10px; }
+body > * {   padding-left: 30px; }
 
 /* polices de caractères */
 body { font-family: Trebuchet MS, sans-serif; }
@@ -36,29 +46,49 @@ body { font-family: Trebuchet MS, sans-serif; }
 label { display: block; }
 label span { display: inline-block; width: 5em; height: 1.5em; }
 
-/*
+
 input, textarea {
   font-family: monospace;
-  padding: 2px 0.5em;
-  width: 5em;
-  font-size: 1.2em;
+  background-color: transparent;
+  padding: 0px 0.5em;
+  width: 5.5em;
+  font-size: 0.8em;
   line-height: 1.33em;
-  color: #666;
-  margin-top: 5px;
-}
-.button {
-  border: 3px outset #444;
-  background-color: #888;
-  padding: 5px 0.5em;
-  border-radius: 3px;
+  color: rgb(130,130,130);
+  margin-top: 3px;
   display: inline-block;
+  border: 0.5px dashed rgb(50,50,50) ;
+  
+
+
+}
+
+select{
+  background-color: transparent;
+  color: rgb(130,130,130);
+  border: 0.5px dashed rgb(50,50,50) ;
+
+}
+
+button {
+  
+  background: rgb(50,50,50) ;
+  display: inline-block;
+
+  padding: 5px 0.5em;
+  border-radius: 2px;
+  border: 2px ;
   margin: 1em 0;
 
   color: #eee;
-  text-shadow: #000 -1px -1px 0;
+
   right: calc(100% - 8em - 3px);
 }
-*/
+
+button:hover {
+    box-shadow: 0 4px 6px 0 rgba(0,0,0,0.24), 0 10px 20px 0 rgba(0,0,0,0.19);
+}
+
 /*
 a {
   text-decoration: none;
