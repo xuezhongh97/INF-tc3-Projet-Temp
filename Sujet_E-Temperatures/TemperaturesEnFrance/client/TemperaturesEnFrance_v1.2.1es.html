@@ -9,19 +9,19 @@
 <meta charset="utf-8">
 <a float="right" href="TemperaturesEnFrance_v1.2.1en.html"><img src="/images/en.png" height="30px"  /></a>
 <a float="right" href="TemperaturesEnFrance_v1.2.1ch.html"><img src="/images/ch.png" height="30px" /></a>
-<a float="right" href="TemperaturesEnFrance_v1.2.1es.html"><img src="/images/es.png" height="30px" /></a>
+<a float="right" href="TemperaturesEnFrance_v1.2.1.html"><img src="/images/fr.png" height="30px" /></a>
 <style>
 #map { height: 300; width: 500; float:right; margin-left:50px; margin-right:50px;}
 </style>
 
 <body onload="load_data()">  <!-- Récupération des données avec le chargement de la page -->
 
-<h1>Météo Wikipédia</h1>
+<h1>Wikipédia tiempo</h1>
  <!-- <label><span>Région :</span><input id="station" name="station"> 
  <button id="bouton">Afficher la courbe</button>  </label>  -->
 <div id="map"></div>  
 <div id="reponse">
-  <p9>Cliquer la carte pour les détails</p9><br/>
+  <p9>Haga clic en el mapa para más detalles.</p9><br/>
   <p1 align="center"></p1>
   <p8 align="center" id="station_nom"></p8><br/>
   <p2 align="center"></p2><br/>
@@ -36,34 +36,34 @@
 
 <br/>
 <div>
-Afficher la température
+Mostrar la température
 <select id="type">
-<option>Moyenne</option>
-<option>Maximale</option>
-<option>Minimale</option>
+<option>Promedio</option>
+<option>Máximo</option>
+<option>Mínimo</option>
 </select>
 </div>
 <br/>
 <div>
 De <input type="date" id="debut" value="1978-01-01" min="1978-01-01" max="2018-10-31">
-À <input type="date" id="fin" value="2018-10-31" min="1978-01-01" max="2018-10-31">
+A <input type="date" id="fin" value="2018-10-31" min="1978-01-01" max="2018-10-31">
 </div>
 <div>
-Tous les <input type="number" id="pas" value="5" min="1" max="60"> jours (entre 1 et 60)
+Cada <input type="number" id="pas" value="5" min="1" max="60"> dias (De 1 a 60)
 </div>
 <br/>
 <div>
-  Mode d'affichage
+  Modo de visualización
 	<select id="mode">
-	<option>Simple</option>
-	<option>Comparaison</option>
-	<option>Agrégation</option>
+	<option>Sencillo</option>
+	<option>Comparación</option>
+	<option>Agregación</option>
 	</select>
 </div>
 
 <div>
-<button id="Afficher">Afficher</button>
-<button id="Effacer">Effacer</button>
+<button id="Afficher">Mostrar</button>
+<button id="Effacer">Borrar</button>
 <div>
 <br/>
 <br/>
@@ -115,15 +115,15 @@ function OnMarkerClick (e) {
 
       xhr.onload = function() {   // fonction callback
       var data = JSON.parse(this.responseText)
-      legende1.innerHTML = "Nom: " ;
+      legende1.innerHTML = "Apellido: " ;
       legende8.innerHTML = data.nom;
-      legende2.innerHTML = "Numéro: " + data.num;
-      legende3.innerHTML = "Latitude: " + data.lat;
-      legende4.innerHTML = "Longtitude: " + data.lon;
-      legende5.innerHTML = "Altitude: " + data.high;
-      legende7.innerHTML = "Stations Sélectionnées: "
+      legende2.innerHTML = "Número: " + data.num;
+      legende3.innerHTML = "Latitud: " + data.lat;
+      legende4.innerHTML = "Longitud: " + data.lon;
+      legende5.innerHTML = "Altitud: " + data.high;
+      legende7.innerHTML = "Estaciones seleccionadas: "
       legende6.innerHTML = data.station_select; 
-      legende9.innerHTML = "Information de la station"
+      legende9.innerHTML = "Información de la estación"
       };
     xhr.open('GET','/detail/'+e.target.idreg,true);  
     xhr.send();
@@ -187,7 +187,7 @@ function Effacer (e) {
       legende5.innerHTML = " ";
       legende6.innerHTML = "<br/>"; 
       legende8.innerHTML = " ";
-      legende9.innerHTML = "Cliquer la carte pour les détails"
+      legende9.innerHTML = "Haga clic en el mapa para más detalles."
       image.src = "";
       image.alt = "";
       };

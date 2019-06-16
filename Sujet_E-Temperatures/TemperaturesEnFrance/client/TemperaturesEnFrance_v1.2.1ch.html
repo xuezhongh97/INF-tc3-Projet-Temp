@@ -2,13 +2,13 @@
 
 <script src="leaflet.js"> // insertion bibliothèque Leaflet : http://leafletjs.com/ </script>
 
-<title>Météo ECL</title>
+<title>大绵羊天气通</title>
 <link rel="stylesheet" type="text/css" href="leaflet.css" /> 
 <link rel="stylesheet" type="text/css" href="style.css"/>
 
 <meta charset="utf-8">
 <a float="right" href="TemperaturesEnFrance_v1.2.1en.html"><img src="/images/en.png" height="30px"  /></a>
-<a float="right" href="TemperaturesEnFrance_v1.2.1ch.html"><img src="/images/ch.png" height="30px" /></a>
+<a float="right" href="TemperaturesEnFrance_v1.2.1.html"><img src="/images/fr.png" height="30px" /></a>
 <a float="right" href="TemperaturesEnFrance_v1.2.1es.html"><img src="/images/es.png" height="30px" /></a>
 <style>
 #map { height: 300; width: 500; float:right; margin-left:50px; margin-right:50px;}
@@ -16,12 +16,12 @@
 
 <body onload="load_data()">  <!-- Récupération des données avec le chargement de la page -->
 
-<h1>Météo Wikipédia</h1>
+<h1>大绵羊天气通</h1>
  <!-- <label><span>Région :</span><input id="station" name="station"> 
  <button id="bouton">Afficher la courbe</button>  </label>  -->
 <div id="map"></div>  
 <div id="reponse">
-  <p9>Cliquer la carte pour les détails</p9><br/>
+  <p9>亲，您要点击图片才能查看详情哦</p9><br/>
   <p1 align="center"></p1>
   <p8 align="center" id="station_nom"></p8><br/>
   <p2 align="center"></p2><br/>
@@ -36,34 +36,34 @@
 
 <br/>
 <div>
-Afficher la température
+  您想查看
 <select id="type">
-<option>Moyenne</option>
-<option>Maximale</option>
-<option>Minimale</option>
+<option>平均值</option>
+<option>最大值</option>
+<option>最小值</option>
 </select>
 </div>
 <br/>
 <div>
-De <input type="date" id="debut" value="1978-01-01" min="1978-01-01" max="2018-10-31">
-À <input type="date" id="fin" value="2018-10-31" min="1978-01-01" max="2018-10-31">
+从 <input type="date" id="debut" value="1978-01-01" min="1978-01-01" max="2018-10-31">
+到 <input type="date" id="fin" value="2018-10-31" min="1978-01-01" max="2018-10-31">
 </div>
 <div>
-Tous les <input type="number" id="pas" value="5" min="1" max="60"> jours (entre 1 et 60)
+每 <input type="number" id="pas" value="5" min="1" max="60"> 天 (从 1 到 60)
 </div>
 <br/>
 <div>
-  Mode d'affichage
-	<select id="mode">
-	<option>Simple</option>
-	<option>Comparaison</option>
-	<option>Agrégation</option>
-	</select>
+  请选择亲想要的显示模式哦
+  <select id="mode">
+  <option>简单模式</option>
+  <option>比较模式</option>
+  <option>聚合模式</option>
+  </select>
 </div>
 
 <div>
-<button id="Afficher">Afficher</button>
-<button id="Effacer">Effacer</button>
+<button id="Afficher">点我显示</button>
+<button id="Effacer">点我清除</button>
 <div>
 <br/>
 <br/>
@@ -79,21 +79,21 @@ L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
   maxZoom: 17,
   attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
 }).addTo(map);
-	 
+   
 function load_data () {
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {   // fonction callback
       // récupération des données renvoyées par le serveur
-	  var data = JSON.parse(this.responseText);
+    var data = JSON.parse(this.responseText);
       // boucle sur les enregistrements renvoyés
       for ( n = 0; n < data.length; n++ ) {
         // insertion d'un marqueur à la position, attachement d'une popup, capture de l'évènement "clic'
-	    
-		L.marker([data[n].lat,data[n].lon]).addTo(map)
+      
+    L.marker([data[n].lat,data[n].lon]).addTo(map)
           .bindPopup(data[n].nom)
-		  .addEventListener('click',OnMarkerClick)
-		  .idreg=data[n].nom;   // propriété personnalisée ajouté au marqueur
-		}
+      .addEventListener('click',OnMarkerClick)
+      .idreg=data[n].nom;   // propriété personnalisée ajouté au marqueur
+    }
     };
     xhr.open('GET','/stations',true);
     xhr.send();
@@ -101,7 +101,7 @@ function load_data () {
 
 function OnMarkerClick (e) {
     var xhr = new XMLHttpRequest();
-	var 
+  var 
       legende1 = document.querySelector('#reponse p1');
       legende8 = document.querySelector('#reponse p8');
       legende2 = document.querySelector('#reponse p2');
@@ -115,15 +115,15 @@ function OnMarkerClick (e) {
 
       xhr.onload = function() {   // fonction callback
       var data = JSON.parse(this.responseText)
-      legende1.innerHTML = "Nom: " ;
+      legende1.innerHTML = "名称: " ;
       legende8.innerHTML = data.nom;
-      legende2.innerHTML = "Numéro: " + data.num;
-      legende3.innerHTML = "Latitude: " + data.lat;
-      legende4.innerHTML = "Longtitude: " + data.lon;
-      legende5.innerHTML = "Altitude: " + data.high;
-      legende7.innerHTML = "Stations Sélectionnées: "
+      legende2.innerHTML = "编号: " + data.num;
+      legende3.innerHTML = "维度: " + data.lat;
+      legende4.innerHTML = "精度: " + data.lon;
+      legende5.innerHTML = "海拔: " + data.high;
+      legende7.innerHTML = "亲选中的站点: "
       legende6.innerHTML = data.station_select; 
-      legende9.innerHTML = "Information de la station"
+      legende9.innerHTML = "站点信息"
       };
     xhr.open('GET','/detail/'+e.target.idreg,true);  
     xhr.send();
@@ -154,7 +154,7 @@ function envoiformulaire(e) {
     };
   if(station == " ")
   {
-    alert("Selectionnez une station S.V.P");
+    alert("亲还没有点击您想看的站点呢");
   }
   else
   {
@@ -187,7 +187,7 @@ function Effacer (e) {
       legende5.innerHTML = " ";
       legende6.innerHTML = "<br/>"; 
       legende8.innerHTML = " ";
-      legende9.innerHTML = "Cliquer la carte pour les détails"
+      legende9.innerHTML = "亲，您要点击图片才能查看详情哦"
       image.src = "";
       image.alt = "";
       };
