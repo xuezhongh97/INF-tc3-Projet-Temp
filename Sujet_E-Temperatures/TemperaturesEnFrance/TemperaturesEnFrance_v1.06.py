@@ -315,7 +315,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                     Color += colorArr[random.randint(0,14)] #randommer une couleur pour chaque affichage
     
                 # tracé de la courbe
-                plt.plot(x,y,linewidth=1, linestyle='-', marker='o', color=Color, label=region.get_nom())
+                # plt.plot(x,y,linewidth=1, linestyle='-', marker='o', color=Color, label=region.get_nom())
                 if self.path_info[6] == "Agrégation":
                     plt.plot(x,y,linewidth=1, linestyle='-', marker='o', color=Color, label="La moyenne de température")
             fig.autofmt_xdate()
@@ -324,7 +324,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
             # légendes
             plt.legend(loc='lower left')
             if self.path_info[6] == "Simple":
-                plt.title('Température {} de '.format(self.path_info[2])+self.path_info[1],fontsize=16)
+                plt.title('Température {} de {}'.format(self.path_info[2],stations_selectionnes[-1]),fontsize=16)
                     
             elif self.path_info[6] == "Comparaison":
                 plt.title('Température {} des stations selectionées'.format(self.path_info[2]),fontsize=16)
@@ -337,7 +337,7 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
         
         if self.path_info[6] == "Simple":
             body = json.dumps({
-                    'title': 'Température {} de '.format(self.path_info[2])+self.path_info[1], \
+                    'title': 'Température {} de {}'.format(self.path_info[2],stations_selectionnes[-1]), \
                     'img': '/'+fichier \
                      });
     
