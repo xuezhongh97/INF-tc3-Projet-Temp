@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<script src="leaflet.js"> // insertion bibliothèque Leaflet : http://leafletjs.com/ </script>
+
+<title>Météo ECL</title>
+<link rel="stylesheet" type="text/css" href="leaflet.css" /> 
+<link rel="stylesheet" type="text/css" href="style.css"/>
+
+<meta charset="utf-8">
+
+<style>
+#map { height: 450; width: 600; float:right; margin-left:50px; margin-right:50px;}
+</style>
+
+<body onload="load_data()">  <!-- Récupération des données avec le chargement de la page -->
+
+<h1>Météo Wikipédia</h1>
+
+ <!-- <label><span>Région :</span><input id="station" name="station"> 
+ <button id="bouton">Afficher la courbe</button>  </label>  -->
+<div id="map"></div>  
+<div id="title"></div>
+<div id="reponse">
+  <p1 align="center" id="station_nom">Cliquer la carte pour les détail</p1><br/>
+  <p2 align="center"></p2><br/>
+  <p3 align="center"></p3><br/>
+  <p4 align="center"></p4><br/>
+  <p5 align="center"></p5><br/>
+  <br/>
+  <br/>
+  <p7 align="center"></p7><br/>
+  <p6 align="center"></p6>
+  
+</div>
+
+<div>
+<br/>
+<br/>
+<select id="type">
+<option>Moyenne</option>
+<option>Maximale</option>
+<option>Minimale</option>
+</select>
+</div>
+
+<div>
+Date de début : <input type="date" id="debut" value="1978-01-01" min="1978-01-01" max="2018-10-31">
+</div>
+<div>
+Date de fin : <input type="date" id="fin" value="2018-10-31" min="1978-01-01" max="2018-10-31">
+</div>
+<div>
+Pas en jours (entre 1 et 60) : <input type="number" id="pas" value="5" min="1" max="60">
+</div>
+
+<div>
+	<select id="mode">
+	<option>Simple</option>
+	<option>Comparaison</option>
+	<option>Agrégation</option>
+	</select>
+</div>
+
+<div>
+<button id="Afficher">Afficher</button>
+<button id="Effacer">Effacer</button>
+<div>
+
+<div id="courbe">
+  <p align="left"></p>
+  <img width="60%" src="" />
+</div>
+</body>
+
+<script>
+// Creation d'une carte dans la balise div "map", et positionne la vue sur un point donné et un niveau de zoom
+var map = L.map('map').setView([46.5,2.5], 5);
+// Ajout d'une couche de dalles OpenStreetMap
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+     }).addTo(map);
+	 
+function load_data () {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {   // fonction callback
+      // récupération des données renvoyées par le serveur
+	  var data = JSON.parse(this.responseText);
+      // boucle sur les enregistrements renvoyés
+      for ( n = 0; n < data.length; n++ ) {
+        // insertion d'un marqueur à la position, attachement d'une popup, capture de l'évènement "clic'
+	    
+		L.marker([data[n].lat,data[n].lon]).addTo(map)
+          .bindPopup(data[n].nom)
+		  .addEventListener('click',OnMarkerClick)
+		  .idreg=data[n].nom;   // propriété personnalisée ajouté au marqueur
+		}
+    };
+    xhr.open('GET','/stations',true);
+    xhr.send();
+}
+
+function OnMarkerClick (e) {
+    var xhr = new XMLHttpRequest();
+	var 
+      legende1 = document.querySelector('#reponse p1');
+      legende2 = document.querySelector('#reponse p2');
+      legende3 = document.querySelector('#reponse p3');
+      legende4 = document.querySelector('#reponse p4');
+      legende5 = document.querySelector('#reponse p5');
+      legende6 = document.querySelector('#reponse p6');
+      legende7 = document.querySelector('#reponse p7');
+
+      xhr.onload = function() {   // fonction callback
+      var data = JSON.parse(this.responseText)
+      legende1.innerHTML = "Nom: " + data.nom;
+      legende2.innerHTML = "Numéro: " + data.num;
+      legende3.innerHTML = "Latitude: " + data.lat;
+      legende4.innerHTML = "Longtitude: " + data.lon;
+      legende5.innerHTML = "Altitude: " + data.high;
+      legende7.innerHTML = "Stations Sélectionnées: "
+      legende6.innerHTML = data.station_select; 
+      };
+    xhr.open('GET','/detail/'+e.target.idreg,true);  
+    xhr.send();
+}
+
+document.getElementById('Afficher').addEventListener('click', envoiformulaire);
+
+function envoiformulaire(e) {
+  var xhr = new XMLHttpRequest(); 
+  // on récupére le nom et le prénom
+  var type = document.getElementById('type').value,
+      mode = document.getElementById('mode').value,
+      debut = document.getElementById('debut').value,
+      fin = document.getElementById('fin').value,
+      pas = document.getElementById('pas').value,
+      station = document.getElementById('title').innerHTML;
+  var
+  	legende6 = document.querySelector('#courbe p'),
+    image =  document.querySelector('#courbe img');
+
+  xhr.onload = function() {   // fonction callback
+    // récupération des données renvoyées par le serveur
+    var data = JSON.parse(this.responseText);
+      legende6.innerHTML = data.title;
+      image.src = data.img;
+      image.alt = data.title;
+
+    // affichage dans la zone 'reponse' du prénom et du nom récupéré par l'appel au serveur
+    };
+  xhr.open('GET','/temperature'+'/'+station+'/'+type+'/'+debut+'/'+fin+'/'+pas+'/'+mode,true);  // requête avec une "query string"
+  xhr.send();
+}
+
+document.getElementById('Effacer').addEventListener('click', Effacer);
+
+function Effacer (e) {
+    var xhr = new XMLHttpRequest();
+  var 
+      legende1 = document.querySelector('#reponse p1');
+      legende2 = document.querySelector('#reponse p2');
+      legende3 = document.querySelector('#reponse p3');
+      legende4 = document.querySelector('#reponse p4');
+      legende5 = document.querySelector('#reponse p5');
+      legende6 = document.querySelector('#reponse p6');
+      legende7 = document.querySelector('#courbe p'),
+      image =  document.querySelector('#courbe img');
+
+      xhr.onload = function() {   // fonction callback
+      var data = JSON.parse(this.responseText)
+      legende1.innerHTML = " ";
+      legende2.innerHTML = " ";
+      legende3.innerHTML = " ";
+      legende4.innerHTML = " ";
+      legende5.innerHTML = " ";
+      legende6.innerHTML = " "; 
+      legende7.innerHTML = " ";
+      image.src = " ";
+      image.alt = " ";
+      };
+    xhr.open('GET','/Effacer/',true);  
+    xhr.send();
+}
+
+</script>
