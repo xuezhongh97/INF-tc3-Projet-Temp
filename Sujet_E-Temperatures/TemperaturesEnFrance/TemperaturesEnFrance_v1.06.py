@@ -187,7 +187,18 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
 ############## On génère et on renvoie un graphique de temperature ############
   
     def send_temperature(self): # pour afficher les informations d'une station
-       
+        if self.path_info[2] == "平均值" or self.path_info[2] == "Promedio" or self.path_info[2] == "average" :
+            self.path_info[2] = "Moyenne"
+        if self.path_info[2] == "最大值" or self.path_info[2] == "Máximo" or self.path_info[2] == "maximum" :
+            self.path_info[2] = "Maximale"
+        if self.path_info[2] == "最小值" or self.path_info[2] == "Mínimo" or self.path_info[2] == "minimum" :
+            self.path_info[2] = "Minimale"
+        if self.path_info[6] == "简单模式" or self.path_info[6] == "Sencillo" :
+            self.path_info[6] = "Simple"
+        if self.path_info[6] == "比较模式" or self.path_info[6] == "Comparación" or self.path_info[6] == "Comparison" :
+            self.path_info[6] = "Comparaison"
+        if self.path_info[6] == "聚合模式" or self.path_info[6] == "Agregación" or self.path_info[6] == "Aggregation" :
+            self.path_info[6] = "Agrégation"
         # Connexion à la BDD
         conn = sqlite3.connect('Temperatures.sqlite')
         c = conn.cursor()
